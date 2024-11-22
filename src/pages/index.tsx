@@ -1,31 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 import { useProdutos } from '../context/ProductContext';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type RootStackParamList = {
-  Home: undefined;
-  CadastroNovoProduto: undefined;
-  CadastroNovaVenda: undefined;
-  HistoricoDeVendas: undefined;
-  Atualizar: undefined;
-  Remover: undefined;
-  Listar: undefined;
+  Index: undefined;
+  CadastroProduto: undefined;
+  ListaProdutos: undefined;
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type IndexScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Index'
+>;
 
-const Index = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+interface IndexProps {
+  navigation: IndexScreenNavigationProp;
+}
+
+const Index: React.FC<IndexProps> = ({ navigation }) => {
   const { produtos } = useProdutos();
 
   const [totalCompra, setTotalCompra] = useState(0);
   const [totalVenda, setTotalVenda] = useState(0);
   const [quantidadeTotal, setQuantidadeTotal] = useState(0);
+  const [lucroEstimado, setLucroEstimado] = useState(0);
 
-  // Função para formatar valores monetários acima de 1000 para "k"
   const formatMonetaryValue = (value: number) => {
     return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toFixed(2);
   };
@@ -44,11 +46,30 @@ const Index = () => {
     setTotalCompra(somaTotalCompra);
     setTotalVenda(somaTotalVenda);
     setQuantidadeTotal(somaQuantidade);
+    setLucroEstimado(somaTotalVenda - somaTotalCompra);
   }, [produtos]);
+  
+  const handleNavigation = (route: keyof RootStackParamList) => {
+    navigation.navigate(route);
+  };
+
+  // Removida a tipagem do MaterialIcons.glyphMap para evitar o erro
+  const renderButton = (
+    icon: string,
+    title: string,
+    route: keyof RootStackParamList
+  ) => (
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => handleNavigation(route)}
+    >
+      <MaterialIcons name={icon as any} size={32} color="#fff" style={styles.buttonIcon} />
+      <Text style={styles.buttonText}>{title}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho com Gradiente, Avatar e Informações de Estoque */}
       <LinearGradient
         colors={['#209bf2', '#1f55d7']}
         start={{ x: 0, y: 0 }}
@@ -56,44 +77,45 @@ const Index = () => {
         style={styles.header}
       >
         <View style={styles.avatar}>
-          <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.avatarImage} />
+          <Image 
+            source={require('../../assets/favicon.png')} 
+            style={styles.avatarImage}
+            defaultSource={require('../../assets/favicon.png')}
+          />
         </View>
         <Text style={styles.headerText}>Moda Blue</Text>
 
-        {/* Valores de Compra, Venda e Quantidade */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Valor de estoque</Text>
-            <Text style={[styles.statText, styles.green]}>R$ {formatMonetaryValue(totalCompra)}</Text>
+            <Text style={[styles.statText, styles.green]}>
+              R$ {formatMonetaryValue(totalCompra)}
+            </Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Total de venda</Text>
-            <Text style={[styles.statText, styles.red]}>R$ {formatMonetaryValue(totalVenda)}</Text>
+            <Text style={[styles.statText, styles.red]}>
+              R$ {formatMonetaryValue(totalVenda)}
+            </Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Quantidade Total</Text>
-            <Text style={[styles.statText, styles.white]}>{quantidadeTotal}</Text>
+            <Text style={[styles.statText, styles.white]}>
+              {quantidadeTotal}
+            </Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Lucro Estimado</Text>
+            <Text style={[styles.statText, { color: '#FFD700' }]}>
+              {formatMonetaryValue(lucroEstimado)}
+            </Text>
           </View>
         </View>
       </LinearGradient>
 
-      {/* Container de Botões em Duas Colunas */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastroNovoProduto')}>
-          <Text style={styles.buttonText}>Cadastrar produto</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Listar')}>
-          <Text style={styles.buttonText}>Todos os produtos</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastroNovaVenda')}>
-          <Text style={styles.buttonText}>Cadastrar venda</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HistoricoDeVendas')}>
-          <Text style={styles.buttonText}>Histórico de venda</Text>
-        </TouchableOpacity>
+        {renderButton('add-box', 'Cadastrar produto', 'CadastroProduto')}
+        {renderButton('format-list-bulleted', 'Lista de produtos', 'ListaProdutos')}
       </View>
     </View>
   );
@@ -109,6 +131,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 90,
+    paddingTop: Platform.OS === 'ios' ? 120 : 90,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
@@ -116,13 +139,21 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#fff',
     marginBottom: 10,
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   avatarImage: {
-    width: '100%',
-    height: '100%',
+    width: '70%',
+    height: '70%',
+    resizeMode: 'contain',
   },
   headerText: {
     fontSize: 24,
@@ -132,13 +163,19 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
     width: '100%',
     marginTop: 20,
     paddingHorizontal: 20,
+    gap: 10,
   },
   statItem: {
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 15,
+    borderRadius: 10,
+    minWidth: '45%',
   },
   statLabel: {
     fontSize: 14,
@@ -150,37 +187,38 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   green: {
-    color: '#FF6B6B',
+    color: '#20C20E',
   },
   red: {
-    color: '#20C20E',
+    color: '#FF6B6B',
   },
   white: {
     color: '#FFFFFF',
   },
   buttonContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginTop: 20,
-    marginBottom: 20,
+    flexDirection: 'column',
+    padding: 20,
+    gap: 15,
   },
   button: {
     backgroundColor: '#1f55d7',
     borderRadius: 15,
-    margin: 0,
-    marginTop: 10,
-    width: 240,
-    height: 130,
+    padding: 20,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  buttonIcon: {
+    marginRight: 15,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
 });
 

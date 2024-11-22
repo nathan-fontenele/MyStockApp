@@ -1,43 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProdutosProvider } from './src/context/ProductContext';
+import { StatusBar, View } from 'react-native';
 import Index from './src/pages/index';
+import CadastroProduto from './src/pages/cadastroProdutos';
+import ListaProdutos from './src/pages/listarProdutos';
 
-type RootStackParamList = {
-  Home: undefined;
+// Definição dos tipos para as rotas
+export type RootStackParamList = {
+  Index: undefined;
+  CadastroProduto: undefined;
+  ListaProdutos: undefined;
 };
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function App() {
+const App: React.FC = () => {
   return (
-    <ProdutosProvider>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName='Home'
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#97A5FF',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-            }}>
-            
-            <Stack.Screen name='Home' component={Index} options={{ title: 'Home' }} />
+    <View style={{ flex: 1 }}>
+      <StatusBar backgroundColor="#209bf2" barStyle="light-content" />
+      <NavigationContainer>
+        <ProdutosProvider>
+          <Stack.Navigator
+            initialRouteName="Index"
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: '#fff' },
+            }}
+          >
+            <Stack.Screen 
+              name="Index" 
+              component={Index}
+            />
+            <Stack.Screen 
+              name="CadastroProduto" 
+              component={CadastroProduto}
+            />
+            <Stack.Screen 
+              name="ListaProdutos" 
+              component={ListaProdutos}
+            />
           </Stack.Navigator>
-        </NavigationContainer>
-    </ProdutosProvider>
+        </ProdutosProvider>
+      </NavigationContainer>
+    </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface Produto {
+export interface Produto {
   id: number;
   nome: string;
   tamanho: string;
