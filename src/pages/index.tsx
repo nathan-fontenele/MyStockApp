@@ -9,6 +9,8 @@ type RootStackParamList = {
   Index: undefined;
   CadastroProduto: undefined;
   ListaProdutos: undefined;
+  CadastroVendas: undefined;
+  HistoricoVendas: undefined;
 };
 
 type IndexScreenNavigationProp = NativeStackNavigationProp<
@@ -53,7 +55,6 @@ const Index: React.FC<IndexProps> = ({ navigation }) => {
     navigation.navigate(route);
   };
 
-  // Removida a tipagem do MaterialIcons.glyphMap para evitar o erro
   const renderButton = (
     icon: string,
     title: string,
@@ -87,13 +88,13 @@ const Index: React.FC<IndexProps> = ({ navigation }) => {
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Valor de estoque</Text>
+            <Text style={styles.statLabel}>Valor em Estoque</Text>
             <Text style={[styles.statText, styles.green]}>
               R$ {formatMonetaryValue(totalCompra)}
             </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Total de venda</Text>
+            <Text style={styles.statLabel}>Potencial de Vendas</Text>
             <Text style={[styles.statText, styles.red]}>
               R$ {formatMonetaryValue(totalVenda)}
             </Text>
@@ -116,6 +117,8 @@ const Index: React.FC<IndexProps> = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         {renderButton('add-box', 'Cadastrar produto', 'CadastroProduto')}
         {renderButton('format-list-bulleted', 'Lista de produtos', 'ListaProdutos')}
+        {renderButton('shopping-cart', 'Cadastrar Venda', 'CadastroVendas')}
+        {renderButton('history', 'Histórico de Vendas', 'HistoricoVendas')}
       </View>
     </View>
   );

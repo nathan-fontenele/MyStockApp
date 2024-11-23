@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useProdutos } from '../context/ProductContext';
+import { MaterialIcons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
@@ -198,7 +199,15 @@ const CadastroProduto: React.FC<CadastroProdutoProps> = ({ navigation }) => {
         colors={['#209bf2', '#1f55d7']}
         style={styles.header}
       >
-        <Text style={styles.headerText}>Cadastro de Produto</Text>
+        <View style={styles.headerContent}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Registrar Produto</Text>
+        </View>
       </LinearGradient>
 
       <ScrollView style={styles.formContainer}>
@@ -244,8 +253,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    padding: 20,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
@@ -298,6 +307,14 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: '#97A5FF',
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  backButton: {
+    marginRight: 15,
   },
   buttonText: {
     color: '#fff',
