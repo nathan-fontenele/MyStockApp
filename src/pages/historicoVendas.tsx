@@ -70,11 +70,9 @@ const handleExportReport = async () => {
   // Converter a planilha para um arquivo binário
   const xlsxOutput = XLSX.write(workbook, { type: 'base64', bookType: 'xlsx' });
 
-  // Definir o caminho para salvar o arquivo
   const fileUri = `${FileSystem.documentDirectory}relatorio_vendas.xlsx`;
 
   try {
-    // Salvar o arquivo no sistema de arquivos
     await FileSystem.writeAsStringAsync(fileUri, xlsxOutput, {
       encoding: FileSystem.EncodingType.Base64,
     });
@@ -263,23 +261,18 @@ const handleExportReport = async () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-  style={styles.exportButton}
-  onPress={handleExportReport}
->
-  <MaterialIcons name="file-download" size={24} color="#fff" />
-  <Text style={styles.exportButtonText}>Exportar Relatório</Text>
-</TouchableOpacity>
-
-        
+            style={styles.exportButton}
+            onPress={handleExportReport}>
+            <MaterialIcons name="file-download" size={24} color="#fff" />
+            <Text style={styles.exportButtonText}>Exportar Relatório</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.clearHistoryButton}
-          onPress={handleLimparHistorico}
-        >
-          <MaterialIcons name="delete-outline" size={24} color="#fff" />
-          <Text style={styles.clearHistoryButtonText}>Limpar</Text>
+          onPress={handleLimparHistorico}>
+            <MaterialIcons name="delete-outline" size={24} color="#fff" />
+            <Text style={styles.clearHistoryButtonText}>Limpar</Text>
         </TouchableOpacity>
-
       </View>
 
       {showFilters && (
@@ -363,8 +356,6 @@ const handleExportReport = async () => {
   );
 };
 
-// E aqui os estilos atualizados:
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -399,7 +390,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     padding: 12,
     borderRadius: 10,
-    flex: 1,
+    marginRight: 5,
     justifyContent: 'center',
   },
   exportButtonText: {
@@ -408,7 +399,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -457,7 +447,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B6B',
     padding: 12,
     borderRadius: 10,
-    width: 100,
+    width: 120,
     justifyContent: 'center',
   },
   clearHistoryButtonText: {

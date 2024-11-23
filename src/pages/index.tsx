@@ -100,7 +100,7 @@ const Index: React.FC<IndexProps> = ({ navigation }) => {
             </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Quantidade Total</Text>
+            <Text style={styles.statLabel}>Quantidade em Estoque</Text>
             <Text style={[styles.statText, styles.white]}>
               {quantidadeTotal}
             </Text>
